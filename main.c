@@ -1,6 +1,7 @@
 /**
  * Author: Luca Mehrpohl
  * Datum:  15.3.22
+ * Aufgabe: Berechnung des Tages-index für ein gegebenes Datum
  **/
 
 #include <stdio.h>
@@ -12,6 +13,7 @@ int day_of_the_year(int day, int month, int year);
 void input_date(int *day, int *month, int *year);
 int get_days_for_month(int month, int year);
 int exists_date(int day, int month, int year);
+int check_year(int year);
 
 int main()
 {
@@ -25,6 +27,10 @@ int main()
     return 0;
 }
 
+/**
+ * zum einlesen des Datums
+ * ändert inputvariablen ab
+ */
 void input_date(int *day, int *month, int *year){
     printf("Geben Sie das Jahr an: ");
     scanf("%i", *&year);
@@ -34,10 +40,18 @@ void input_date(int *day, int *month, int *year){
     scanf("%i", *&day);
 }
 
+/**
+ * prüft Relevanten Jahreszahl
+ */
+int check_year(int year){
+    return (year >= 1582 && year <= 2400);
+}
+
+/**
+ * Prüft ob das eingegebene Datum ein Gültiges Datum des Gregorianischem Kalenders ist
+ */
 int exists_date(int day, int month, int year){
-    int lower_year_bounds = 1582;
-    int upper_year_bounds = 2400;
-    if (year < upper_year_bounds && year > lower_year_bounds){
+    if (check_year(year)){
         if(month <= 12 && month >= 1){
             if (day <= get_days_for_month(month - 1, year)){
                 return 1;
@@ -48,6 +62,9 @@ int exists_date(int day, int month, int year){
     return 0;
 }
 
+/**
+ * Gibt zurück der wie vielte Tag ein gegebenes Datum ist
+ */
 int day_of_the_year(int day, int month, int year)
 {
     // definieren der Daten und der Summe der Tage
@@ -69,14 +86,21 @@ int day_of_the_year(int day, int month, int year)
 
     return dayOfYear;
 }
-
-// gibt tage des jewiligen Monats zurück 
-// Monate beginnen mit 0
+/**
+ * gibt zurück wie viele Tage der Monat des Jahres hat
+ * Monate beginnen mit 0
+ * Nur für valide Daten des Gregorianschem Kalenders
+ */
 int get_days_for_month(int month, int year){
+
+    if (month >= 12 || month < 0 || !check_year(year)){
+        return -1;
+    }
+
     // definieren des Standart lookup tables
     int lookup[12] = {31,28,31,30,31,30,31,31,30,31,30,31};
 
-    // prüfung ob es ein Schaltjahr ist
+
     if (is_leapyear(year)){
         lookup[1] = 29;
     }
@@ -84,6 +108,14 @@ int get_days_for_month(int month, int year){
 
 }
 
+/**
+ * Gibt zurück ob ein gegebenes Schaltjahr ist
+ * Nur für valide Jahreszahlen des Gregorianischem Kalender
+ */
 int is_leapyear(int year){
-    return (year % 4 == 0 && !(year % 100 == 0 && year % 400 != 0));
+    if (check_year(year)){
+        return (year % 4 == 0 && !(year % 100 == 0 && year % 400 != 0));
+    }else{
+        return -1;
+    }
 }
