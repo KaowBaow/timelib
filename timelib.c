@@ -1,10 +1,7 @@
 #include "timelib.h"
 #include <stdio.h>
+#include <string.h>
 
-/**
- * zum einlesen des Datums
- * ändert inputvariablen ab
- */
 /**
 void input_date(struct Date *date){
     printf("Geben Sie das Jahr an: ");
@@ -15,6 +12,10 @@ void input_date(struct Date *date){
     scanf("%i", &date->day);
 }
 */
+/**
+ * zum einlesen des Datums
+ * ändert inputvariablen ab
+ */
 struct Date input_date(){
     struct Date date;
     printf("Geben Sie das Jahr an: ");
@@ -96,6 +97,16 @@ int get_days_for_month(int month, int year){
 }
 
 /**
+ * Gibt einen Wochentag zu einem 
+ */
+void get_day_of_week(struct Date date, char *day){
+    char days_in_week[7][2] = { "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" };
+
+    int weekday  = (date.day += date.month < 3 ? date.year-- : date.year - 2, 23*date.month/9 + date.day + 4 + date.year/4- date.year/100 + date.year/400)%7;
+    day = days_in_week[weekday];
+}
+
+/**
  * Gibt zurück ob ein gegebenes Schaltjahr ist
  * Nur für valide Jahreszahlen des Gregorianischem Kalender
  */
@@ -105,4 +116,13 @@ int is_leapyear(int year){
     }else{
         return -1;
     }
+}
+
+/**
+ * Gibt zurück welche Kalenderwoche ein Datum hat
+ */
+int calendar_week(struct Date date){
+    if(exists_date(date)){
+    }
+    return 0;
 }
