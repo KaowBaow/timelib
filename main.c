@@ -7,20 +7,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+struct Date{
+    int day;
+    int month;
+    int year;
+};
 
+void input_date(struct Date *date);
+int exists_date(struct Date);
+int day_of_the_year(struct Date);
 int is_leapyear(int year);
-int day_of_the_year(int day, int month, int year);
-void input_date(int *day, int *month, int *year);
 int get_days_for_month(int month, int year);
-int exists_date(int day, int month, int year);
 int check_year(int year);
 
 int main()
 {
     int day, month, year;
-    input_date(&day, &month, &year);
-    if (exists_date(day, month, year)){
-        printf("Tag des Jahres: %i\n", day_of_the_year(day, month, year));
+    struct Date date;
+    input_date(&date);
+    if (exists_date(date)){
+        printf("Tag des Jahres: %i\n", day_of_the_year(date));
     }else{
         printf("Das Datum ist nicht gültig");
     }
@@ -31,13 +37,13 @@ int main()
  * zum einlesen des Datums
  * ändert inputvariablen ab
  */
-void input_date(int *day, int *month, int *year){
+void input_date(struct Date *date){
     printf("Geben Sie das Jahr an: ");
-    scanf("%i", *&year);
+    scanf("%i", &date->year);
     printf("Geben Sie den Monat an: ");
-    scanf("%i", *&month);
+    scanf("%i", &date->month);
     printf("Geben Sie den Tag an: ");
-    scanf("%i", *&day);
+    scanf("%i", &date->day);
 }
 
 /**
@@ -50,10 +56,10 @@ int check_year(int year){
 /**
  * Prüft ob das eingegebene Datum ein Gültiges Datum des Gregorianischem Kalenders ist
  */
-int exists_date(int day, int month, int year){
-    if (check_year(year)){
-        if(month <= 12 && month >= 1){
-            if (day <= get_days_for_month(month - 1, year)){
+int exists_date(struct Date date){
+    if (check_year(date.year)){
+        if(date.month <= 12 && date.month >= 1){
+            if (date.day <= get_days_for_month(date.month - 1, date.year)){
                 return 1;
             }
         }
@@ -65,19 +71,19 @@ int exists_date(int day, int month, int year){
 /**
  * Gibt zurück der wie vielte Tag ein gegebenes Datum ist
  */
-int day_of_the_year(int day, int month, int year)
+int day_of_the_year(struct Date date)
 {
     // definieren der Daten und der Summe der Tage
     int dayOfYear = 0;
 
     int i;
-    for (i=0; i<month; i++){
+    for (i=0; i<date.month; i++){
         // falls es nicht der richtige monat ist, alle Tage des Monats addieren
-        if (month - i > 1){
-            dayOfYear += get_days_for_month(i, year);
+        if (date.month - i > 1){
+            dayOfYear += get_days_for_month(i, date.year);
         // im letzen Monat nur die Tage des Monats aufaddieren
-        }else if(month - i == 1 && day <= get_days_for_month(i, year)){
-            dayOfYear += day;
+        }else if(date.month - i == 1 && date.day <= get_days_for_month(i, date.year)){
+            dayOfYear += date.day;
         }else{
             printf("Ungültiges Datum\n");
             return 0;
